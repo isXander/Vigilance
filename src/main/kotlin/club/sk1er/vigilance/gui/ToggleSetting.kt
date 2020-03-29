@@ -6,6 +6,7 @@ import club.sk1er.elementa.components.UIWrappedText
 import club.sk1er.elementa.constraints.*
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
+import club.sk1er.mods.core.universal.UniversalGraphicsHandler
 import club.sk1er.vigilance.data.PropertyData
 import club.sk1er.vigilance.gui.components.Toggle
 import net.minecraft.client.Minecraft
@@ -26,14 +27,14 @@ class ToggleSetting(name: String, description: String, prop: PropertyData) : Set
 
         // TODO: This doesn't work, how can we scale the height appropriately so the text doesn't look really squished?
         height = TextAspectConstraint()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val text = UIWrappedText(description).constrain {
         x = 3.pixels()
         y = 25.pixels()
         width = FillConstraint() - 50.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val toggle = Toggle(prop.getAsBoolean()).onUpdate { newValue ->
@@ -63,8 +64,8 @@ class ToggleSetting(name: String, description: String, prop: PropertyData) : Set
             setYAnimation(Animations.OUT_EXP, 0.5f, (-10).pixels())
             setColorAnimation(Animations.OUT_EXP, 0.5f, Color(0, 0, 0, 0).asConstraint())
         }
-        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint())}
-        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
+        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint())}
+        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
         toggle.fadeOut()
     }
 }

@@ -7,16 +7,17 @@ import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import club.sk1er.elementa.effects.ScissorEffect
 import club.sk1er.elementa.effects.StencilEffect
+import club.sk1er.mods.core.universal.UniversalScreen
 import club.sk1er.vigilance.Vigilant
 import club.sk1er.vigilance.data.Category
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiScreen
-import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import java.awt.Color
 import java.net.URL
+//#if MC<=11202
+import org.lwjgl.input.Keyboard
+//#endif
 
-class SettingsGui(private val config: Vigilant) : GuiScreen() {
+class SettingsGui(private val config: Vigilant) : UniversalScreen() {
     private val window = Window()
     private val categories = config.getCategories()
     private val settingsBox = UIBlock(Color(0, 0, 0, 100))
@@ -177,15 +178,15 @@ class SettingsGui(private val config: Vigilant) : GuiScreen() {
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        mc.theWorld ?: super.drawDefaultBackground()
+        super.drawDefaultBackground()
         super.drawScreen(mouseX, mouseY, partialTicks)
         window.draw()
     }
 
-    override fun handleMouseInput() {
-        super.handleMouseInput()
-        val delta = Mouse.getEventDWheel().coerceIn(-1, 1)
-        window.mouseScroll(delta)
+
+    override fun onMouseScroll(delta: Int) {
+        super.onMouseScroll(delta)
+        window.mouseScroll(delta.coerceIn(-1,1))
     }
 
     override fun keyTyped(typedChar: Char, keyCode: Int) {
@@ -195,13 +196,17 @@ class SettingsGui(private val config: Vigilant) : GuiScreen() {
 
     override fun initGui() {
         super.initGui()
+        //#if MC<=11202
         Keyboard.enableRepeatEvents(true)
+        //#endif
     }
 
     override fun onGuiClosed() {
         super.onGuiClosed()
         config.writeData()
+        //#if MC<=11202
         Keyboard.enableRepeatEvents(false)
+        //#endif
     }
 
     inner class GUICategory(string: String, settingsBox: UIComponent, private val isSearch: Boolean = false) : UIContainer() {

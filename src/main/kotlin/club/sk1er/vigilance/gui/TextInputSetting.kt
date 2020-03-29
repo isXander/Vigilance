@@ -8,6 +8,7 @@ import club.sk1er.elementa.constraints.*
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
 import club.sk1er.elementa.effects.ScissorEffect
+import club.sk1er.mods.core.universal.UniversalGraphicsHandler
 import net.minecraft.client.Minecraft
 import java.awt.Color
 
@@ -23,14 +24,14 @@ class TextInputSetting(name: String, description: String, placeholder: String = 
         y = 3.pixels()
         width = PixelConstraint(Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) * 2f)
         height = 18.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val text = UIWrappedText(description).constrain {
         x = 3.pixels()
         y = 25.pixels()
         width = FillConstraint() - 50.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val inputBox = UIBlock(Color(0, 0, 0, 0))
@@ -51,7 +52,7 @@ class TextInputSetting(name: String, description: String, placeholder: String = 
         input.constrain {
             x = 2.pixels()
             y = CenterConstraint()
-            color = Color(255, 255, 255, 10).asConstraint()
+            color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
         } childOf inputBox
     }
 
@@ -75,9 +76,9 @@ class TextInputSetting(name: String, description: String, placeholder: String = 
             setYAnimation(Animations.OUT_EXP, 0.5f, (-10).pixels())
             setColorAnimation(Animations.OUT_EXP, 0.5f, Color(0, 0, 0, 0).asConstraint())
         }
-        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint())}
-        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
-        input.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
+        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint())}
+        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
+        input.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
         inputBox.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(0, 0, 0, 0).asConstraint()) }
     }
 }

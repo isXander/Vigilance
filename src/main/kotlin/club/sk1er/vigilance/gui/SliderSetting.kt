@@ -6,16 +6,17 @@ import club.sk1er.elementa.components.UIWrappedText
 import club.sk1er.elementa.constraints.*
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
+import club.sk1er.mods.core.universal.UniversalGraphicsHandler
 import club.sk1er.vigilance.data.PropertyData
 import club.sk1er.vigilance.gui.components.Slider
 import net.minecraft.client.Minecraft
-import org.lwjgl.input.Keyboard
 import java.awt.Color
 
 class SliderSetting(name: String, description: String, private val prop: PropertyData) : SettingObject(prop) {
     private val drawBox = UIBlock().constrain {
         height = ChildBasedSizeConstraint() + 15.pixels()
         width = RelativeConstraint()
+        color = Color(0, 0, 0, 0).asConstraint()
         color = Color(0, 0, 0, 0).asConstraint()
     } childOf this
 
@@ -24,14 +25,14 @@ class SliderSetting(name: String, description: String, private val prop: Propert
         y = 3.pixels()
         width = PixelConstraint(Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) * 2f)
         height = 18.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val text = UIWrappedText(description).constrain {
         x = 3.pixels()
         y = 25.pixels()
         width = FillConstraint() - 50.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val slider = Slider(valueToPercent(prop.getValue()))
@@ -39,19 +40,19 @@ class SliderSetting(name: String, description: String, private val prop: Propert
     private val minText = UIText(prop.property.min.toString()).constrain {
         x = RelativeConstraint(1.25f) - (prop.property.max.toString().width() / 2).pixels()
         y = CenterConstraint()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf slider
 
     private val maxText = UIText(prop.property.max.toString()).constrain {
         x = RelativeConstraint(2.25f) + (prop.property.max.toString().width() / 2).coerceAtLeast(15).pixels()
         y = CenterConstraint()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf slider
 
     private val currentText = (UIText(prop.getValue<Int>().toString()).constrain {
         x = CenterConstraint().to(slider.knob) as XConstraint
         y = 2.pixels(true).alignOutside(true).to(slider.knob) as YConstraint
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf slider) as UIText
 
     init {
@@ -63,12 +64,12 @@ class SliderSetting(name: String, description: String, private val prop: Propert
         onKeyType { _, keyCode ->
             if (!slider.knob.isHovered()) return@onKeyType
 
-            if (keyCode == Keyboard.KEY_LEFT) {
+            if (keyCode == 0xCB /* LeftArrow on arrow keypad */) {
                 val newValue = prop.getValue<Int>() - 1
                 slider.setValue(valueToPercent(newValue))
                 prop.setValue(newValue)
                 currentText.setText(newValue.toString())
-            } else if (keyCode == Keyboard.KEY_RIGHT) {
+            } else if (keyCode == 0xCD /* RightArrow on arrow keypad */) {
                 val newValue = prop.getValue<Int>() + 1
                 slider.setValue(valueToPercent(newValue))
                 prop.setValue(newValue)
@@ -108,11 +109,11 @@ class SliderSetting(name: String, description: String, private val prop: Propert
             setYAnimation(Animations.OUT_EXP, 0.5f, (-10).pixels())
             setColorAnimation(Animations.OUT_EXP, 0.5f, Color(0, 0, 0, 0).asConstraint())
         }
-        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
-        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
-        minText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
-        maxText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
-        currentText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
+        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
+        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
+        minText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
+        maxText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
+        currentText.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
         slider.fadeOut()
     }
 }

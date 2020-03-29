@@ -6,6 +6,7 @@ import club.sk1er.elementa.components.UIWrappedText
 import club.sk1er.elementa.constraints.*
 import club.sk1er.elementa.constraints.animation.Animations
 import club.sk1er.elementa.dsl.*
+import club.sk1er.mods.core.universal.UniversalGraphicsHandler
 import club.sk1er.vigilance.data.PropertyData
 import club.sk1er.vigilance.gui.components.DropDown
 import net.minecraft.client.Minecraft
@@ -32,14 +33,14 @@ class SelectSetting(name: String, description: String, selected: Int, selections
         y = 3.pixels()
         width = PixelConstraint(Minecraft.getMinecraft().fontRendererObj.getStringWidth(name) * 2f)
         height = 18.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val text = UIWrappedText(description).constrain {
         x = 3.pixels()
         y = 25.pixels()
         width = FillConstraint() - 50.pixels()
-        color = Color(255, 255, 255, 10).asConstraint()
+        color = Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()
     } childOf drawBox
 
     private val dropDown = DropDown(prop.getValue(),false)
@@ -75,8 +76,8 @@ class SelectSetting(name: String, description: String, selected: Int, selections
             setYAnimation(Animations.OUT_EXP, 0.5f, (-10).pixels())
             setColorAnimation(Animations.OUT_EXP, 0.5f, Color(0, 0, 0, 0).asConstraint())
         }
-        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint())}
-        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255, 10).asConstraint()) }
+        title.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint())}
+        text.animate { setColorAnimation(Animations.OUT_EXP, 0.5f, Color(255, 255, 255,  UniversalGraphicsHandler.ZERO_TEXT_ALPHA).asConstraint()) }
         dropDown.fadeOut()
     }
 }
