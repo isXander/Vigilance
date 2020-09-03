@@ -82,7 +82,7 @@ class SettingsGui(private val config: Vigilant) : GuiScreen() {
                 width = 20.pixels()
                 height = 20.pixels()
             }.addChild(
-                UIImage.ofURL(URL("https://i.imgur.com/2jRqkVW.png")).constrain {
+                UIImage.ofResource("/assets/search-icon.png").constrain {
                     x = CenterConstraint()
                     y = CenterConstraint()
                     width = 15.pixels()

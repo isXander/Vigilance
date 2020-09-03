@@ -39,7 +39,13 @@ abstract class Vigilant(file: File) {
     private var dirty = false
 
     fun initialize() {
-        readData()
+        try {
+            readData()
+        } catch (e: Throwable) {
+            writeData()
+            println("Failed to read Vigilant config data from ${fileConfig.file.name}:")
+            e.printStackTrace()
+        }
 
         fixedRateTimer(period = 30 * 1000) { writeData() }
 
