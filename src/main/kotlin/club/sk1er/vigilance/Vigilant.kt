@@ -71,8 +71,10 @@ abstract class Vigilant(file: File) {
     }
 
     fun getCategories(): List<Category> {
-        val groupedByCategory = properties.groupBy { it.property.category }
-        return groupedByCategory.map { Category(it.key, it.value.splitBySubcategory()) }
+        return properties
+            .filter { !it.property.hidden }
+            .groupBy { it.property.category }
+            .map { Category(it.key, it.value.splitBySubcategory()) }
     }
 
     fun getCategoryFromSearch(term: String): Category {
