@@ -32,6 +32,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.17"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
         if (fabric) {
             classpath 'fabric-loom:fabric-loom.gradle.plugin:0.4-SNAPSHOT'
         } else if (mcVersion >= 11400) {
@@ -62,6 +63,7 @@ if (FABRIC) {
     apply plugin: 'net.minecraftforge.gradle.forge'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 apply plugin: 'com.replaymod.preprocess'
@@ -268,12 +270,30 @@ jar {
     exclude("META-INF/mods.toml")
     exclude("mods.toml")
     exclude("kotlin/**")
+    exclude('*.so')
+    exclude('*.dylib')
+    exclude('*.dll')
 
     manifest {
         attributes(
             'FMLModType': 'LIBRARY'
         )
     }
+}
+
+shadowJar {
+    relocate 'club.sk1er', 'com.chattriggers.sk1er'
+
+    exclude "kotlin/**"
+    exclude '*.so'
+    exclude '*.dylib'
+    exclude '*.dll'
+    exclude '*.jnilib'
+    exclude 'ibxm/**'
+    exclude 'com/jcraft/**'
+    exclude 'org/lwjgl/**'
+    exclude 'net/java/**'
+    exclude 'club/sk1er/vigilance/example'
 }
 
 publishing {

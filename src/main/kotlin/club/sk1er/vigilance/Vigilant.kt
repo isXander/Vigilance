@@ -108,7 +108,7 @@ abstract class Vigilant @JvmOverloads constructor(
             error("Dependency must be a boolean PropertyType!")
         }
 
-        fields.first!!.dependsOn = dependency
+        fields.first!!.dependsOn = fields.second!!.value
         fields.second!!.hasDependants = true
     }
 

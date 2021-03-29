@@ -41,9 +41,9 @@ object Vigilance {
             return
 
         initialized = true
-        StencilEffect.enableStencil()
+        // StencilEffect.enableStencil()
         VigilancePalette.preload()
-        MinecraftForge.EVENT_BUS.register(this)
+        // MinecraftForge.EVENT_BUS.register(this)
         //#if FABRIC || MC<=11202
         ClientCommandHandler.instance.registerCommand(PaletteCommand())
         //#endif
@@ -63,8 +63,7 @@ object Vigilance {
     //#endif
     //#endif
 
-    @SubscribeEvent
-    fun tick(event: TickEvent.ClientTickEvent) {
+    fun tick() {
         if (gui != null) {
             try {
                 UMinecraft.getMinecraft().displayGuiScreen(gui)
