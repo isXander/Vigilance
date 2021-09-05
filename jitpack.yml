@@ -2,6 +2,7 @@ jdk:
   - openjdk16
 before_install:
   - echo "Before Install"
+  - chmod +x ./ensure-java-16
   - ./ensure-java-16 install
 install:
   - echo "Install"
