@@ -8,6 +8,7 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.elementa.effects.ScissorEffect
 import gg.essential.elementa.state.toConstraint
+import gg.essential.universal.USound
 import gg.essential.vigilance.gui.VigilancePalette
 import gg.essential.vigilance.utils.onLeftClick
 import java.awt.Color
@@ -44,17 +45,24 @@ class DropDown(
         height = 5.pixels()
     }
 
-    private val optionsHolder by UIContainer().constrain {
+    private val scrollContainer by UIContainer().constrain {
         x = 5.pixels()
-        y = SiblingConstraint() boundTo currentSelectionText
+        y = SiblingConstraint(optionPadding) boundTo currentSelectionText
         width = ChildBasedMaxSizeConstraint()
-        height = ChildBasedSizeConstraint(optionPadding) + optionPadding.pixels()
+        height = ChildBasedSizeConstraint() + optionPadding.pixels()
     } childOf this
+
+    private val optionsHolder by ScrollComponent(customScissorBoundingBox = scrollContainer).constrain {
+        x = 0.pixels()
+        y = 0.pixels()
+        height = (((options.size - 1) * (getFontProvider().getStringHeight("Text", getTextScale()) + optionPadding) - optionPadding).pixels()) coerceAtMost
+                basicHeightConstraint { Window.of(this@DropDown).getBottom() - this@DropDown.getTop() - 31 }
+    } childOf scrollContainer
 
     private val mappedOptions = options.mapIndexed { index, option ->
         // TODO: Wrap this somehow
         UIText(option).constrain {
-            y = SiblingConstraint() + optionPadding.pixels()
+            y = SiblingConstraint(optionPadding)
             color = Color(0, 0, 0, 0).toConstraint()
             fontProvider = getFontProvider()
         }.onMouseEnter {
@@ -67,14 +75,20 @@ class DropDown(
         }
     }
 
+    private val collapsedWidth = 22.pixels() + CopyConstraintFloat().to(currentSelectionText)
+
+    private val expandedWidth = 22.pixels() + (ChildBasedMaxSizeConstraint().to(optionsHolder) coerceAtLeast CopyConstraintFloat().to(currentSelectionText))
+
     init {
         constrain {
-            width = 22.pixels() + ChildBasedMaxSizeConstraint().boundTo(optionsHolder)
+            width = collapsedWidth
             height = 20.pixels()
             color = VigilancePalette.darkHighlightState.toConstraint()
         }
 
         readOptionComponents()
+
+        optionsHolder.hide(instantly = true)
 
         outlineEffect?.let(::enableEffect)
 
@@ -99,6 +113,7 @@ class DropDown(
         }
 
         onLeftClick { event ->
+            USound.playButtonPress()
             event.stopPropagation()
 
             if (active) {
@@ -110,7 +125,7 @@ class DropDown(
     }
 
     fun select(index: Int) {
-        if (options.indices.contains(index)) {
+        if (index in options.indices) {
             selected = index
             onValueChange(index)
             currentSelectionText.setText(options[index])
@@ -132,33 +147,49 @@ class DropDown(
         }
 
         animate {
-            setHeightAnimation(Animations.IN_SIN, 0.35f, 20.pixels() + RelativeConstraint(1f).boundTo(optionsHolder))
+            setHeightAnimation(
+                Animations.IN_SIN,
+                0.35f,
+                20.pixels() + RelativeConstraint(1f).boundTo(scrollContainer)
+            )
         }
+
+        optionsHolder.scrollToTop(false)
 
         replaceChild(upArrow, downArrow)
         setFloating(true)
         optionsHolder.unhide(useLastPosition = true)
+        setWidth(expandedWidth)
     }
 
-    fun collapse(unHover: Boolean = false) {
+    fun collapse(unHover: Boolean = false, instantly: Boolean = false) {
         if (active)
             replaceChild(downArrow, upArrow)
         active = false
 
-        animate {
-            setHeightAnimation(Animations.OUT_SIN, 0.35f, 20.pixels())
+        fun animationComplete() {
+            mappedOptions.forEach {
+                it.setColor(Color(0, 0, 0, 0).toConstraint())
+            }
+            setFloating(false)
+            optionsHolder.hide(instantly = true)
+        }
 
-            onComplete {
-                mappedOptions.forEach {
-                    it.setColor(Color(0, 0, 0, 0).toConstraint())
-                }
-                setFloating(false)
-                optionsHolder.hide(instantly = true)
+        if (instantly) {
+            setHeight(20.pixels())
+            animationComplete()
+        } else {
+            animate {
+                setHeightAnimation(Animations.OUT_SIN, 0.35f, 20.pixels())
+
+                onComplete(::animationComplete)
             }
         }
 
         if (unHover)
             unHoverText(currentSelectionText)
+
+        setWidth(collapsedWidth)
     }
 
     private fun hoverText(text: UIComponent) {
